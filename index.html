@@ -99,7 +99,7 @@
         .iframe-wrapper { position: relative; width: 100%; height: 100%; border-radius: 0; overflow: hidden; background: #ffffff; flex: 1; }
         .content-iframe { width: 100%; height: 100%; border: none; background: #ffffff; }
 
-        /* ================= 響應式設計 (手機與平板) ================= */
+        /* 響應式設計 */
         @media (min-width: 769px) {
             .form-field { min-width: 180px; }
             .btn-primary, .btn-secondary { width: auto; }
@@ -109,26 +109,20 @@
             body { padding: 0; }
             .dashboard { height: 100vh; max-width: 100%; border-radius: 0; border: none; flex-direction: column; }
             .mobile-header { display: flex; }
-            
-            /* 側邊欄變為抽屜 */
             .sidebar { position: absolute; top: 0; left: 0; height: 100%; transform: translateX(-100%); box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
             .sidebar.open { transform: translateX(0); }
             .sidebar-overlay.active { display: block; opacity: 1; }
-
-            /* 調整登入卡與內容區 */
             .login-container { padding: 30px 20px; border-radius: 24px; margin: 0 16px; }
             .login-header h1 { font-size: 1.8rem; }
             .content-panel { padding: 16px; }
             .settings-section { padding: 20px 16px; border-radius: 20px; }
             .settings-card { padding: 16px; border-radius: 16px; }
-            
-            /* 讓設定列表的按鍵按鈕在手機上不那麼擁擠 */
             .button-item .actions { width: 100%; justify-content: flex-end; }
         }
     </style>
 </head>
 <body>
-    <!-- 登入介面 -->
+    <!-- 登入介面 (已移除預設 value) -->
     <div id="loginContainer" class="login-container">
         <div class="login-header">
             <h1>系統登入</h1>
@@ -136,11 +130,11 @@
         </div>
         <div class="input-group">
             <i class="fas fa-user"></i>
-            <input type="text" id="loginUsername" placeholder="賬號名稱" value="admin" autocomplete="off">
+            <input type="text" id="loginUsername" placeholder="賬號名稱" autocomplete="off">
         </div>
         <div class="input-group">
             <i class="fas fa-lock"></i>
-            <input type="password" id="loginPassword" placeholder="密碼" value="123456">
+            <input type="password" id="loginPassword" placeholder="密碼" autocomplete="new-password">
         </div>
         <button class="login-btn" id="loginBtn">
             <i class="fas fa-arrow-right-to-bracket"></i> 登入
@@ -286,7 +280,7 @@
                     const buttons = getNavButtons();
                     const defaultBtn = buttons.find(b => b.id === 'baccarat') || buttons[0];
                     if (defaultBtn) {
-                        switchPage(defaultBtn.id); // switchPage 將在第 3 段實現
+                        switchPage(defaultBtn.id); 
                     }
                 } else {
                     loginError.textContent = '賬號或密碼錯誤，請重試。';
@@ -298,13 +292,16 @@
                 currentUser = null;
                 dashboard.classList.remove('active');
                 loginContainer.classList.remove('hidden');
-                loginUsername.value = 'admin';
-                loginPassword.value = '123456';
+                
+                // 清空輸入框
+                loginUsername.value = '';
+                loginPassword.value = '';
+                
                 loginError.textContent = '';
                 activeButtonId = 'baccarat';
                 contentPanel.innerHTML = ''; 
                 sidebarReturnBtn.style.display = 'none';
-                closeMobileMenu(); // 登出時收起選單
+                closeMobileMenu(); 
             }
 
             // ---------- 渲染側邊欄按鈕 ----------
@@ -324,14 +321,14 @@
                     buttonEl.innerHTML = `<i class="fas ${btn.icon || 'fa-circle'}"></i> ${btn.name}`;
                     buttonEl.addEventListener('click', () => {
                         switchPage(btn.id);
-                        closeMobileMenu(); // 點擊按鈕後自動收起手機選單
+                        closeMobileMenu();
                     });
                     navButtonsContainer.appendChild(buttonEl);
                 });
             }
 
             // 注意：switchPage 與設定頁面渲染將在第 3 段實現
-            // ---------- 頁面切換邏輯 ----------
+                     // ---------- 頁面切換邏輯 ----------
             function switchPage(buttonId) {
                 const buttons = getNavButtons();
                 const btn = buttons.find(b => b.id === buttonId);
@@ -497,7 +494,7 @@
                 // 綁定設定頁面內的事件
                 bindSettingsEvents();
             }
-            // ---------- 設定頁面事件綁定 ----------
+                        // ---------- 設定頁面事件綁定 ----------
             function bindSettingsEvents() {
                 // === 更改密碼 ===
                 document.getElementById('changePasswordBtn').addEventListener('click', function() {
