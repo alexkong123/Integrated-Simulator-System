@@ -122,7 +122,7 @@
     </style>
 </head>
 <body>
-    <!-- 登入介面 (已移除預設 value) -->
+    <!-- 登入介面 -->
     <div id="loginContainer" class="login-container">
         <div class="login-header">
             <h1>系統登入</h1>
@@ -211,7 +211,7 @@
                 const defaultButtons = [
                     { id: 'baccarat', name: '百家樂牌例', url: 'https://alexkong123.github.io/cards-rules/', icon: 'fa-diamond' },
                     { id: '95', name: '95數', url: 'https://alexkong123.github.io/discount95-game/', icon: 'fa-hashtag' },
-                    { id: 'roulette', name: '輪盤', url: 'https://alexkong123.github.io/Roulette123/', icon: 'fa-circle-notch' },
+                    { id: 'roulette', name: '輪盤', url: 'https://alexkong123.github.io/Roulette/', icon: 'fa-circle-notch' },
                     { id: 'dice', name: '骰寶', url: 'https://alexkong123.github.io/sicbo/', icon: 'fa-dice' },
                     { id: 'paigow', name: '牌九', url: 'https://alexkong123.github.io/PG-Game-WP/', icon: 'fa-th' },
                     { id: 'settings', name: '設定', url: '#settings', icon: 'fa-gear' }
@@ -292,11 +292,8 @@
                 currentUser = null;
                 dashboard.classList.remove('active');
                 loginContainer.classList.remove('hidden');
-                
-                // 清空輸入框
                 loginUsername.value = '';
                 loginPassword.value = '';
-                
                 loginError.textContent = '';
                 activeButtonId = 'baccarat';
                 contentPanel.innerHTML = ''; 
@@ -327,14 +324,23 @@
                 });
             }
 
-            // 注意：switchPage 與設定頁面渲染將在第 3 段實現
-                     // ---------- 頁面切換邏輯 ----------
+            // ---------- 頁面切換邏輯（包含設定密碼驗證） ----------
             function switchPage(buttonId) {
                 const buttons = getNavButtons();
                 const btn = buttons.find(b => b.id === buttonId);
                 if (!btn) return;
 
-                // 更新 active 狀態
+                // 進入設定需輸入密碼
+                if (buttonId === 'settings') {
+                    const inputPwd = prompt('請輸入設定頁面管理密碼：');
+                    if (inputPwd !== '888666') {
+                        if (inputPwd !== null) {
+                            alert('密碼錯誤，無法進入設定！');
+                        }
+                        return; 
+                    }
+                }
+
                 activeButtonId = buttonId;
                 document.querySelectorAll('.nav-btn').forEach(el => {
                     if (el.dataset.id === buttonId) {
@@ -344,21 +350,18 @@
                     }
                 });
 
-                // 更新手機端頂部標題
                 mobilePageTitle.textContent = btn.name;
 
-                // 如果是「設定」按鈕
                 if (buttonId === 'settings') {
                     contentPanel.classList.remove('iframe-mode');
-                    sidebarReturnBtn.style.display = 'none'; // 設定頁面不需要返回按鈕
+                    sidebarReturnBtn.style.display = 'none';
                     renderSettingsPage();
                     return;
                 }
 
-                // 判斷如果是完整的外部網址，顯示側邊欄「返回系統」按鈕並全螢幕載入 iframe
                 if (btn.url && (btn.url.startsWith('http://') || btn.url.startsWith('https://'))) {
                     contentPanel.classList.add('iframe-mode');
-                    sidebarReturnBtn.style.display = 'flex'; // 顯示側邊欄返回按鈕
+                    sidebarReturnBtn.style.display = 'flex';
                     
                     contentPanel.innerHTML = `
                         <div class="iframe-wrapper">
@@ -366,7 +369,6 @@
                         </div>
                     `;
                 } else {
-                    // 本地錨點或無網址，顯示模擬內容，隱藏返回按鈕
                     contentPanel.classList.remove('iframe-mode');
                     sidebarReturnBtn.style.display = 'none';
                     
@@ -387,7 +389,7 @@
                 }
             }
 
-            // ---------- 設定頁面渲染（HTML 模板） ----------
+            // ---------- 設定頁面渲染 ----------
             function renderSettingsPage() {
                 const users = getUsers();
                 const buttons = getNavButtons();
@@ -490,13 +492,11 @@
                         </div>
                     </div>
                 `;
-
-                // 綁定設定頁面內的事件
                 bindSettingsEvents();
             }
-                        // ---------- 設定頁面事件綁定 ----------
+
+            // ---------- 設定頁面事件綁定 ----------
             function bindSettingsEvents() {
-                // === 更改密碼 ===
                 document.getElementById('changePasswordBtn').addEventListener('click', function() {
                     const oldPwd = document.getElementById('oldPassword').value.trim();
                     const newPwd = document.getElementById('newPassword').value.trim();
@@ -537,7 +537,6 @@
                     document.getElementById('confirmPassword').value = '';
                 });
 
-                // === 新增用戶 ===
                 document.getElementById('addUserBtn').addEventListener('click', function() {
                     const username = document.getElementById('newUsername').value.trim();
                     const password = document.getElementById('newUserPassword').value.trim();
@@ -571,9 +570,7 @@
                     document.getElementById('userCount').textContent = users.length;
                 });
 
-                // === 主介面按鍵管理 ===
                 let editingButtonId = null;
-
                 const btnNameInput = document.getElementById('btnName');
                 const btnUrlInput = document.getElementById('btnUrl');
                 const btnIconInput = document.getElementById('btnIcon');
@@ -613,7 +610,6 @@
                     renderNavButtons();
                 }
 
-                // 新增 / 更新按鍵
                 addButtonBtn.addEventListener('click', function() {
                     const name = btnNameInput.value.trim();
                     const url = btnUrlInput.value.trim() || '#';
@@ -662,7 +658,6 @@
                     }
                 });
 
-                // 修改 / 刪除事件委託
                 buttonListEl.addEventListener('click', function(e) {
                     const editBtn = e.target.closest('.edit-btn');
                     const deleteBtn = e.target.closest('.delete-btn');
@@ -724,29 +719,19 @@
             }
 
             // ---------- 全局事件監聽器綁定 ----------
-            
-            // 登入 / 登出
             loginBtn.addEventListener('click', login);
             logoutBtn.addEventListener('click', logout);
-
-            // Enter 快速登入
             loginPassword.addEventListener('keydown', function(e) { if (e.key === 'Enter') login(); });
             loginUsername.addEventListener('keydown', function(e) { if (e.key === 'Enter') login(); });
 
-            // === 側邊欄返回按鈕事件 ===
             sidebarReturnBtn.addEventListener('click', function() {
-                // 恢復內邊距
                 contentPanel.classList.remove('iframe-mode');
-                // 隱藏返回按鈕
                 sidebarReturnBtn.style.display = 'none';
-                // 手機端點擊返回後自動收起選單
                 closeMobileMenu(); 
                 
-                // 獲取當前按鈕資訊以顯示提示
                 const buttons = getNavButtons();
                 const btn = buttons.find(b => b.id === activeButtonId) || { name: '遊戲', url: '', icon: 'fa-gamepad' };
                 
-                // 顯示退出後的歡迎畫面
                 contentPanel.innerHTML = `
                     <div class="settings-section" style="background:#0e1923; border-radius:28px; padding:40px; flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;">
                         <i class="fas ${btn.icon || 'fa-circle'}" style="font-size:4rem; color:#d4af37; margin-bottom:20px; opacity:0.8;"></i>
