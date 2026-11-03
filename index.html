@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TG模擬系統</title>
+    <title>系統登入 · 管理介面</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -207,6 +207,11 @@
                 localStorage.setItem('users', JSON.stringify(defaultUsers));
             }
 
+            // 初始化管理密碼 (進入設定的密碼)
+            if (!localStorage.getItem('adminPassword')) {
+                localStorage.setItem('adminPassword', '888666');
+            }
+
             if (!localStorage.getItem('navButtons')) {
                 const defaultButtons = [
                     { id: 'baccarat', name: '百家樂牌例', url: 'https://alexkong123.github.io/cards-rules/', icon: 'fa-diamond' },
@@ -224,6 +229,8 @@
             const saveUsers = (users) => localStorage.setItem('users', JSON.stringify(users));
             const getNavButtons = () => JSON.parse(localStorage.getItem('navButtons'));
             const saveNavButtons = (btns) => localStorage.setItem('navButtons', JSON.stringify(btns));
+            const getAdminPassword = () => localStorage.getItem('adminPassword') || '888666';
+            const saveAdminPassword = (pwd) => localStorage.setItem('adminPassword', pwd);
 
             // 當前狀態
             let currentUser = null;
@@ -324,16 +331,16 @@
                 });
             }
 
-            // ---------- 頁面切換邏輯（包含設定密碼驗證） ----------
+            // ---------- 頁面切換邏輯（包含動態讀取管理密碼） ----------
             function switchPage(buttonId) {
                 const buttons = getNavButtons();
                 const btn = buttons.find(b => b.id === buttonId);
                 if (!btn) return;
 
-                // 進入設定需輸入密碼
+                // 進入設定需輸入密碼 (動態讀取)
                 if (buttonId === 'settings') {
                     const inputPwd = prompt('請輸入設定頁面管理密碼：');
-                    if (inputPwd !== '888666') {
+                    if (inputPwd !== getAdminPassword()) {
                         if (inputPwd !== null) {
                             alert('密碼錯誤，無法進入設定！');
                         }
@@ -389,7 +396,7 @@
                 }
             }
 
-            // ---------- 設定頁面渲染 ----------
+            // ---------- 設定頁面渲染 (新增管理密碼區塊) ----------
             function renderSettingsPage() {
                 const users = getUsers();
                 const buttons = getNavButtons();
@@ -398,9 +405,9 @@
                     <div class="settings-section">
                         <h3><i class="fas fa-sliders-h"></i> 系統設定</h3>
 
-                        <!-- 更改密碼 -->
+                        <!-- 更改用戶登入密碼 -->
                         <div class="settings-card">
-                            <h4><i class="fas fa-key"></i> 更改密碼</h4>
+                            <h4><i class="fas fa-key"></i> 更改用戶登入密碼 (當前帳號)</h4>
                             <div class="form-row">
                                 <div class="form-field">
                                     <label>當前密碼</label>
@@ -415,10 +422,33 @@
                                     <input type="password" id="confirmPassword" placeholder="再次輸入新密碼">
                                 </div>
                                 <button class="btn-primary" id="changePasswordBtn">
-                                    <i class="fas fa-save"></i> 更新
+                                    <i class="fas fa-save"></i> 更新登入密碼
                                 </button>
                             </div>
                             <div id="passwordFeedback" class="msg-feedback"></div>
+                        </div>
+
+                        <!-- 更改管理密碼 (保護設定頁面) -->
+                        <div class="settings-card" style="border-color: #d4af37;">
+                            <h4><i class="fas fa-user-shield"></i> 更改開發者管理密碼 (進入設定用)</h4>
+                            <div class="form-row">
+                                <div class="form-field">
+                                    <label>當前管理密碼</label>
+                                    <input type="password" id="oldAdminPwd" placeholder="預設為 888666">
+                                </div>
+                                <div class="form-field">
+                                    <label>新管理密碼</label>
+                                    <input type="password" id="newAdminPwd" placeholder="輸入新管理密碼">
+                                </div>
+                                <div class="form-field">
+                                    <label>確認新管理密碼</label>
+                                    <input type="password" id="confirmAdminPwd" placeholder="再次輸入新管理密碼">
+                                </div>
+                                <button class="btn-primary" id="changeAdminPwdBtn" style="background: #f59e0b; color: #000;">
+                                    <i class="fas fa-shield-alt"></i> 更新管理密碼
+                                </button>
+                            </div>
+                            <div id="adminPwdFeedback" class="msg-feedback"></div>
                         </div>
 
                         <!-- 新增用戶 -->
@@ -497,6 +527,7 @@
 
             // ---------- 設定頁面事件綁定 ----------
             function bindSettingsEvents() {
+                // 1. 更改用戶登入密碼
                 document.getElementById('changePasswordBtn').addEventListener('click', function() {
                     const oldPwd = document.getElementById('oldPassword').value.trim();
                     const newPwd = document.getElementById('newPassword').value.trim();
@@ -530,13 +561,51 @@
 
                     users[userIndex].password = newPwd;
                     saveUsers(users);
-                    feedback.textContent = '密碼已成功更新！';
+                    feedback.textContent = '登入密碼已成功更新！';
                     feedback.classList.remove('error');
                     document.getElementById('oldPassword').value = '';
                     document.getElementById('newPassword').value = '';
                     document.getElementById('confirmPassword').value = '';
                 });
 
+                // 2. 更改管理密碼 (新增功能)
+                document.getElementById('changeAdminPwdBtn').addEventListener('click', function() {
+                    const oldPwd = document.getElementById('oldAdminPwd').value.trim();
+                    const newPwd = document.getElementById('newAdminPwd').value.trim();
+                    const confirmPwd = document.getElementById('confirmAdminPwd').value.trim();
+                    const feedback = document.getElementById('adminPwdFeedback');
+                    feedback.classList.remove('error');
+
+                    if (!oldPwd || !newPwd || !confirmPwd) {
+                        feedback.textContent = '請填寫所有管理密碼欄位。';
+                        feedback.classList.add('error');
+                        return;
+                    }
+                    if (getAdminPassword() !== oldPwd) {
+                        feedback.textContent = '當前管理密碼錯誤。';
+                        feedback.classList.add('error');
+                        return;
+                    }
+                    if (newPwd !== confirmPwd) {
+                        feedback.textContent = '新管理密碼與確認不一致。';
+                        feedback.classList.add('error');
+                        return;
+                    }
+                    if (newPwd.length < 3) {
+                        feedback.textContent = '管理密碼長度至少3個字元。';
+                        feedback.classList.add('error');
+                        return;
+                    }
+
+                    saveAdminPassword(newPwd);
+                    feedback.textContent = '開發者管理密碼已成功更新！';
+                    feedback.classList.remove('error');
+                    document.getElementById('oldAdminPwd').value = '';
+                    document.getElementById('newAdminPwd').value = '';
+                    document.getElementById('confirmAdminPwd').value = '';
+                });
+
+                // 3. 新增用戶
                 document.getElementById('addUserBtn').addEventListener('click', function() {
                     const username = document.getElementById('newUsername').value.trim();
                     const password = document.getElementById('newUserPassword').value.trim();
@@ -570,6 +639,7 @@
                     document.getElementById('userCount').textContent = users.length;
                 });
 
+                // 4. 主介面按鍵管理
                 let editingButtonId = null;
                 const btnNameInput = document.getElementById('btnName');
                 const btnUrlInput = document.getElementById('btnUrl');
