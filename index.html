@@ -31,10 +31,43 @@
         .mobile-header { display: none; align-items: center; justify-content: space-between; background: #0a121b; padding: 16px 20px; border-bottom: 1px solid #26323f; z-index: 100; width: 100%; }
         .mobile-menu-btn { background: transparent; border: none; color: #d4af37; font-size: 1.5rem; cursor: pointer; padding: 5px; }
         .mobile-title { color: #f0e6d2; font-weight: 600; font-size: 1.1rem; }
-        
+
+        /* ===== 桌面端側邊欄折疊按鈕 ===== */
+        .sidebar-toggle-desktop {
+            position: absolute;
+            top: 18px;
+            left: 278px;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background: rgba(18, 30, 43, 0.9);
+            border: 1px solid #2d3f52;
+            color: #d4af37;
+            font-size: 1rem;
+            cursor: pointer;
+            z-index: 130;
+            backdrop-filter: blur(6px);
+            transition: left 0.3s ease, background 0.2s, color 0.2s, border-color 0.2s;
+        }
+        .sidebar-toggle-desktop:hover { background: #d4af37; color: #0b1117; border-color: #f5e6b0; }
+        .dashboard.sidebar-collapsed .sidebar-toggle-desktop { left: 18px; }
+
         /* 側邊欄 */
-        .sidebar { width: 260px; background: #0a121b; padding: 24px 18px; display: flex; flex-direction: column; border-right: 1px solid #26323f; overflow-y: auto; flex-shrink: 0; transition: transform 0.3s ease; z-index: 200; }
-        
+        .sidebar { width: 260px; background: #0a121b; padding: 24px 18px; display: flex; flex-direction: column; border-right: 1px solid #26323f; overflow-y: auto; flex-shrink: 0; transition: width 0.3s ease, padding 0.3s ease, transform 0.3s ease; z-index: 200; }
+
+        /* 折疊狀態（桌面端） */
+        .dashboard.sidebar-collapsed .sidebar {
+            width: 0;
+            padding-left: 0;
+            padding-right: 0;
+            border-right: none;
+            overflow: hidden;
+            transform: translateX(-100%);
+        }
+
         /* 手機端選單遮罩 */
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); backdrop-filter: blur(3px); z-index: 150; opacity: 0; transition: opacity 0.3s; }
 
@@ -42,20 +75,20 @@
         .sidebar-header i { font-size: 2rem; color: #d4af37; }
         .sidebar-header h3 { color: #f0e6d2; font-weight: 500; font-size: 1.2rem; }
         .sidebar-header span { color: #8b9bb0; font-size: 0.75rem; display: block; }
-        
+
         .sidebar-user { display: flex; align-items: center; gap: 10px; padding: 12px 16px; margin-bottom: 20px; background: #11212e; border-radius: 12px; color: #d4af37; font-weight: 500; border: 1px solid #294054; }
 
         .nav-buttons { display: flex; flex-direction: column; gap: 10px; flex: 1; overflow-y: auto; }
-        .nav-btn { display: flex; align-items: center; gap: 16px; padding: 14px 20px; background: transparent; border: 1px solid transparent; border-radius: 16px; color: #cbd5e1; font-size: 1rem; font-weight: 500; cursor: pointer; transition: all 0.2s; text-align: left; width: 100%; }
+        .nav-btn { display: flex; align-items: center; gap: 16px; padding: 14px 20px; background: transparent; border: 1px solid transparent; border-radius: 16px; color: #cbd5e1; font-size: 1rem; font-weight: 500; cursor: pointer; transition: all 0.2s; text-align: left; width: 100%; white-space: nowrap; }
         .nav-btn i { width: 24px; color: #a7925c; font-size: 1.2rem; }
         .nav-btn:hover { background: rgba(212, 175, 55, 0.1); border-color: rgba(212, 175, 55, 0.3); color: #f1e9d3; }
         .nav-btn.active { background: linear-gradient(90deg, #d4af37 0%, #a88629 100%); color: #0b1117; font-weight: 700; border-color: #f5e6b0; }
         .nav-btn.active i { color: #0b1117; }
 
-        .sidebar-return-btn { display: none; margin-top: 10px; padding: 14px 20px; background: #2a1f1f; border: 1px solid #d4af37; border-radius: 16px; color: #d4af37; font-weight: 500; align-items: center; gap: 14px; cursor: pointer; font-size: 1rem; transition: 0.2s; width: 100%; text-align: left; }
+        .sidebar-return-btn { display: none; margin-top: 10px; padding: 14px 20px; background: #2a1f1f; border: 1px solid #d4af37; border-radius: 16px; color: #d4af37; font-weight: 500; align-items: center; gap: 14px; cursor: pointer; font-size: 1rem; transition: 0.2s; width: 100%; text-align: left; white-space: nowrap; }
         .sidebar-return-btn:hover { background: #d4af37; color: #0b1117; }
-        
-        .logout-btn { margin-top: 10px; padding: 14px 20px; background: #1a2532; border: 1px solid #3a4b5e; border-radius: 16px; color: #cbd5e1; font-weight: 500; display: flex; align-items: center; gap: 14px; cursor: pointer; font-size: 1rem; width: 100%; text-align: left; }
+
+        .logout-btn { margin-top: 10px; padding: 14px 20px; background: #1a2532; border: 1px solid #3a4b5e; border-radius: 16px; color: #cbd5e1; font-weight: 500; display: flex; align-items: center; gap: 14px; cursor: pointer; font-size: 1rem; width: 100%; text-align: left; white-space: nowrap; }
         .logout-btn:hover { background: #2a1f1f; border-color: #f87171; color: #fecaca; }
         .logout-btn i { color: #f87171; }
 
@@ -111,6 +144,10 @@
             .mobile-header { display: flex; }
             .sidebar { position: absolute; top: 0; left: 0; height: 100%; transform: translateX(-100%); box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
             .sidebar.open { transform: translateX(0); }
+            /* 手機端不受折疊狀態影響 */
+            .dashboard.sidebar-collapsed .sidebar { width: 260px; padding: 24px 18px; transform: translateX(-100%); overflow-y: auto; }
+            .dashboard.sidebar-collapsed .sidebar.open { transform: translateX(0); }
+            .sidebar-toggle-desktop { display: none; }
             .sidebar-overlay.active { display: block; opacity: 1; }
             .login-container { padding: 30px 20px; border-radius: 24px; margin: 0 16px; }
             .login-header h1 { font-size: 1.8rem; }
@@ -144,7 +181,7 @@
 
     <!-- 主介面 (後台) -->
     <div id="dashboard" class="dashboard">
-        
+
         <!-- 手機端頂部導航列 -->
         <header class="mobile-header">
             <button class="mobile-menu-btn" id="mobileMenuBtn">
@@ -155,6 +192,11 @@
                 <i class="fas fa-user-circle"></i>
             </div>
         </header>
+
+        <!-- 桌面端側邊欄折疊按鈕 -->
+        <button class="sidebar-toggle-desktop" id="desktopToggleBtn" title="隱藏側邊欄">
+            <i class="fas fa-chevron-left" id="desktopToggleIcon"></i>
+        </button>
 
         <!-- 側邊欄遮罩 (手機端點擊關閉選單) -->
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -168,7 +210,7 @@
                     <span>管理後台</span>
                 </div>
             </div>
-            
+
             <div class="sidebar-user">
                 <i class="fas fa-user-circle"></i> <span id="sidebarAdminName">admin</span>
             </div>
@@ -176,12 +218,12 @@
             <div class="nav-buttons" id="navButtonsContainer">
                 <!-- 按鈕由 JavaScript 動態生成 -->
             </div>
-            
+
             <!-- 側邊欄返回按鈕 -->
             <button class="sidebar-return-btn" id="sidebarReturnBtn">
                 <i class="fas fa-undo"></i> 返回系統
             </button>
-            
+
             <button class="logout-btn" id="logoutBtn">
                 <i class="fas fa-sign-out-alt"></i> 登出
             </button>
@@ -248,12 +290,35 @@
             const contentPanel = document.getElementById('contentPanel');
             const sidebarAdminName = document.getElementById('sidebarAdminName');
             const sidebarReturnBtn = document.getElementById('sidebarReturnBtn');
-            
+
             // 手機版選單相關
             const sidebar = document.getElementById('sidebar');
             const mobileMenuBtn = document.getElementById('mobileMenuBtn');
             const sidebarOverlay = document.getElementById('sidebarOverlay');
             const mobilePageTitle = document.getElementById('mobilePageTitle');
+
+            // 桌面端側邊欄折疊相關
+            const desktopToggleBtn = document.getElementById('desktopToggleBtn');
+            const desktopToggleIcon = document.getElementById('desktopToggleIcon');
+
+            // ---------- 桌面端側邊欄折疊邏輯 ----------
+            function updateDesktopToggleIcon() {
+                const collapsed = dashboard.classList.contains('sidebar-collapsed');
+                desktopToggleIcon.className = collapsed ? 'fas fa-chevron-right' : 'fas fa-chevron-left';
+                desktopToggleBtn.title = collapsed ? '顯示側邊欄' : '隱藏側邊欄';
+            }
+
+            // 讀取上次的折疊狀態
+            if (localStorage.getItem('sidebarCollapsed') === '1') {
+                dashboard.classList.add('sidebar-collapsed');
+            }
+            updateDesktopToggleIcon();
+
+            desktopToggleBtn.addEventListener('click', function() {
+                dashboard.classList.toggle('sidebar-collapsed');
+                updateDesktopToggleIcon();
+                localStorage.setItem('sidebarCollapsed', dashboard.classList.contains('sidebar-collapsed') ? '1' : '0');
+            });
 
             // ---------- 手機選單開合邏輯 ----------
             function toggleMobileMenu() {
@@ -281,13 +346,13 @@
                     loginContainer.classList.add('hidden');
                     dashboard.classList.add('active');
                     sidebarAdminName.textContent = currentUser;
-                    
+
                     renderNavButtons();
-                    
+
                     const buttons = getNavButtons();
                     const defaultBtn = buttons.find(b => b.id === 'baccarat') || buttons[0];
                     if (defaultBtn) {
-                        switchPage(defaultBtn.id); 
+                        switchPage(defaultBtn.id);
                     }
                 } else {
                     loginError.textContent = '賬號或密碼錯誤，請重試。';
@@ -303,9 +368,9 @@
                 loginPassword.value = '';
                 loginError.textContent = '';
                 activeButtonId = 'baccarat';
-                contentPanel.innerHTML = ''; 
+                contentPanel.innerHTML = '';
                 sidebarReturnBtn.style.display = 'none';
-                closeMobileMenu(); 
+                closeMobileMenu();
             }
 
             // ---------- 渲染側邊欄按鈕 ----------
@@ -344,7 +409,7 @@
                         if (inputPwd !== null) {
                             alert('密碼錯誤，無法進入設定！');
                         }
-                        return; 
+                        return;
                     }
                 }
 
@@ -369,7 +434,7 @@
                 if (btn.url && (btn.url.startsWith('http://') || btn.url.startsWith('https://'))) {
                     contentPanel.classList.add('iframe-mode');
                     sidebarReturnBtn.style.display = 'flex';
-                    
+
                     contentPanel.innerHTML = `
                         <div class="iframe-wrapper">
                             <iframe src="${btn.url}" class="content-iframe" allow="fullscreen"></iframe>
@@ -378,7 +443,7 @@
                 } else {
                     contentPanel.classList.remove('iframe-mode');
                     sidebarReturnBtn.style.display = 'none';
-                    
+
                     contentPanel.innerHTML = `
                         <div class="settings-section" style="background:#0e1923; border-radius:28px; padding:40px; flex:1;">
                             <h3 style="color:#d4af37; font-weight:300;">
@@ -797,11 +862,11 @@
             sidebarReturnBtn.addEventListener('click', function() {
                 contentPanel.classList.remove('iframe-mode');
                 sidebarReturnBtn.style.display = 'none';
-                closeMobileMenu(); 
-                
+                closeMobileMenu();
+
                 const buttons = getNavButtons();
                 const btn = buttons.find(b => b.id === activeButtonId) || { name: '遊戲', url: '', icon: 'fa-gamepad' };
-                
+
                 contentPanel.innerHTML = `
                     <div class="settings-section" style="background:#0e1923; border-radius:28px; padding:40px; flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;">
                         <i class="fas ${btn.icon || 'fa-circle'}" style="font-size:4rem; color:#d4af37; margin-bottom:20px; opacity:0.8;"></i>
