@@ -32,28 +32,46 @@
         .mobile-menu-btn { background: transparent; border: none; color: #d4af37; font-size: 1.5rem; cursor: pointer; padding: 5px; }
         .mobile-title { color: #f0e6d2; font-weight: 600; font-size: 1.1rem; }
 
-        /* ===== 桌面端側邊欄折疊按鈕 ===== */
+        /* ===== 桌面端側邊欄折疊按鈕 (垂直置中的邊緣隱藏把手) ===== */
         .sidebar-toggle-desktop {
             position: absolute;
-            top: 18px;
-            left: 278px;
-            width: 42px;
-            height: 42px;
+            top: 50%;
+            left: 260px; /* 吸附在側邊欄右側 */
+            transform: translateY(-50%);
+            width: 16px;
+            height: 64px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 14px;
-            background: rgba(18, 30, 43, 0.9);
+            border-radius: 0 12px 12px 0;
+            background: rgba(10, 18, 27, 0.7);
             border: 1px solid #2d3f52;
+            border-left: none;
             color: #d4af37;
-            font-size: 1rem;
+            font-size: 0.8rem;
             cursor: pointer;
-            z-index: 130;
-            backdrop-filter: blur(6px);
-            transition: left 0.3s ease, background 0.2s, color 0.2s, border-color 0.2s;
+            z-index: 250;
+            opacity: 0.15; /* 默認隱藏，僅留一點輪廓 */
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .sidebar-toggle-desktop:hover { background: #d4af37; color: #0b1117; border-color: #f5e6b0; }
-        .dashboard.sidebar-collapsed .sidebar-toggle-desktop { left: 18px; }
+        /* 懸停時完全顯示並輕微變寬 */
+        .sidebar-toggle-desktop:hover {
+            opacity: 1;
+            width: 22px;
+            background: #d4af37;
+            color: #0b1117;
+            border-color: #f5e6b0;
+        }
+        /* 側邊欄收起時，把手貼在最左側邊緣 */
+        .dashboard.sidebar-collapsed .sidebar-toggle-desktop {
+            left: 0;
+            border-radius: 0 12px 12px 0;
+            opacity: 0.15;
+        }
+        .dashboard.sidebar-collapsed .sidebar-toggle-desktop:hover {
+            opacity: 1;
+            width: 22px;
+        }
 
         /* 側邊欄 */
         .sidebar { width: 260px; background: #0a121b; padding: 24px 18px; display: flex; flex-direction: column; border-right: 1px solid #26323f; overflow-y: auto; flex-shrink: 0; transition: width 0.3s ease, padding 0.3s ease, transform 0.3s ease; z-index: 200; }
@@ -144,10 +162,11 @@
             .mobile-header { display: flex; }
             .sidebar { position: absolute; top: 0; left: 0; height: 100%; transform: translateX(-100%); box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
             .sidebar.open { transform: translateX(0); }
+            /* 手機端徹底隱藏折疊按鈕 */
+            .sidebar-toggle-desktop { display: none !important; }
             /* 手機端不受折疊狀態影響 */
             .dashboard.sidebar-collapsed .sidebar { width: 260px; padding: 24px 18px; transform: translateX(-100%); overflow-y: auto; }
             .dashboard.sidebar-collapsed .sidebar.open { transform: translateX(0); }
-            .sidebar-toggle-desktop { display: none; }
             .sidebar-overlay.active { display: block; opacity: 1; }
             .login-container { padding: 30px 20px; border-radius: 24px; margin: 0 16px; }
             .login-header h1 { font-size: 1.8rem; }
@@ -193,7 +212,7 @@
             </div>
         </header>
 
-        <!-- 桌面端側邊欄折疊按鈕 -->
+        <!-- 桌面端側邊欄折疊按鈕 (邊緣隱藏把手) -->
         <button class="sidebar-toggle-desktop" id="desktopToggleBtn" title="隱藏側邊欄">
             <i class="fas fa-chevron-left" id="desktopToggleIcon"></i>
         </button>
